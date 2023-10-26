@@ -60,12 +60,12 @@ function Payment() {
                 Farklı Bir Ödeme Yöntemi Seçin : 
             </Text>
         </View>
-
+{/* 
         <View style={styles}>
             <TouchableOpacity>
 
             </TouchableOpacity>
-        </View>
+        </View> */}
             
       </ImageBackground>
     </View>

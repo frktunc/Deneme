@@ -3,7 +3,7 @@
  */
 
 import {AppRegistry} from 'react-native';
-import App from './src/modules/Payment/payment';
+import App from './Route';
 // ./src/modules/DoktorAppointmentDetails/doktorappointmentdetails
 // './src/modules/OnlineMeeting/online
 // ./src/modules/DoktorDetails/doktordetails
