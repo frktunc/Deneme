@@ -69,8 +69,9 @@ function Login({ navigation }) {
         password
       })
         .then(response => {
+          console.log(response.data.success)
           const responseData = response.data;
-          console.log(responseData.success);
+          // console.log(responseData.success);
           if (responseData.success) {
             showMessage({
               message: responseData.message,

@@ -4,6 +4,7 @@ import styles from './appointment_style';
 import  Colors from '../../styles/color'
 import DoktorCard from '../../components/Doktor_card';
 import { SearchBar } from 'react-native-elements';
+import axios from 'axios';
 
 
 
@@ -24,10 +25,12 @@ const categories = [
 // const[branş,setBranş] = useState('');
 // const[DImage,setDİmage] = useState('')
 
-
+//
 
 function Appointment({navigation}) {
   
+  
+
 
   const renderItem = ({ item }) => {
     return (
@@ -47,7 +50,11 @@ function Appointment({navigation}) {
           <Text style={styles.main_text}>
             Randevunu Oluştur
           </Text>
+
+         
+
         </View>
+
         <View>
         <ScrollView >
           <FlatList
@@ -69,10 +76,9 @@ function Appointment({navigation}) {
         </View>
         
        <DoktorCard navigation={navigation} />
-       <DoktorCard navigation={navigation}  />
-       <DoktorCard navigation={navigation}  />
+       
         
-        
+      
       </ImageBackground>
     </View>
     </ScrollView>

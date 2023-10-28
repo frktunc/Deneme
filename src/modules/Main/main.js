@@ -60,21 +60,21 @@ function Main({navigation}){
     })
   }
    // Resim post
-    const formData = new FormData();
-    formData.append('profilephoto', {
-      uri: selectedImage,
-      type: 'image/jpeg',
-      name: 'user_profile_image.jpg',
-    });
-    axios.post('http://10.0.2.2:3000/api/patient/update?pf=1',formData,{
-      headers:{
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-    .then((response) => {
-      console.log('Resim yükleme başarılı:', response.data)
+    // const formData = new FormData();
+    // formData.append('profilephoto', {
+    //   uri: selectedImage,
+    //   type: 'image/jpeg',
+    //   name: 'user_profile_image.jpg',
+    // });
+    // axios.post('http://10.0.2.2:3000/api/patient/update?pf=1',formData,{
+    //   headers:{
+    //     'Content-Type': 'multipart/form-data',
+    //   },
+    // })
+    // .then((response) => {
+    //   console.log('Resim yükleme başarılı:', response.data)
      
-    })
+    // })
     // .catch((error) => {
     //   console.error('Resim yükleme hatası:', error);
     // })
@@ -91,7 +91,7 @@ function Main({navigation}){
 
       const fetchData = async () => {
         try {
-          const response = await axios.get('http://10.0.2.2:3000/api/patient/update');
+          const response = await axios.get('http://10.0.2.2:3000/api/patient/profile');
           console.log(response.data.data);
           setWeight(response.data.data.weight);
           setHeight(response.data.data.height);
@@ -106,32 +106,32 @@ function Main({navigation}){
       }
 
       // doktor fake get
-      const fetchData2 = async () => {
-        try {
-          const response = await axios.get('http://10.0.2.2:3000/api/patient/appointments/');
-          const firstAppointment = response.data.data[0];
-          console.log(response)
-          if (firstAppointment) {
-            const appointmentName = firstAppointment.name; // Randevu adı
-            const doctorName = firstAppointment.doctor.name; // Doktor adı
-            const doctorSpecialization = firstAppointment.doctor.specialization; // Doktor uzmanlık alanı
-            const hospitalName = firstAppointment.doctor.location.hospitalName; // Hastane adı
-            const city = firstAppointment.doctor.location.city; // Şehir
-            const appointmentDate = firstAppointment.date; // Randevu tarihi
-            const isAvailable = firstAppointment.isAvailable; // Kullanılabilir mi?
-            setName(doctorName);
-            setrandevuT(appointmentDate);
-            setHastane(hospitalName);
-            setUzmanlık(doctorSpecialization)
-          }
+      // const fetchData2 = async () => {
+      //   try {
+      //     const response = await axios.get('http://10.0.2.2:3000/api/patient/appointments/');
+      //     const firstAppointment = response.data.data[0];
+      //     console.log(response)
+      //     if (firstAppointment) {
+      //       const appointmentName = firstAppointment.name; // Randevu adı
+      //       const doctorName = firstAppointment.doctor.name; // Doktor adı
+      //       const doctorSpecialization = firstAppointment.doctor.specialization; // Doktor uzmanlık alanı
+      //       const hospitalName = firstAppointment.doctor.location.hospitalName; // Hastane adı
+      //       const city = firstAppointment.doctor.location.city; // Şehir
+      //       const appointmentDate = firstAppointment.date; // Randevu tarihi
+      //       const isAvailable = firstAppointment.isAvailable; // Kullanılabilir mi?
+      //       setName(doctorName);
+      //       setrandevuT(appointmentDate);
+      //       setHastane(hospitalName);
+      //       setUzmanlık(doctorSpecialization)
+      //     }
           
           
           
           
-        }catch(error) {
-          console.error('veriler çekilmedi doktor ',error)
-        }
-      }
+      //   }catch(error) {
+      //     console.error('veriler çekilmedi doktor ',error)
+      //   }
+      // }
      
 
       //picker için permissions
@@ -150,9 +150,9 @@ function Main({navigation}){
     fetchData();
   }, []);
 
-  useEffect(() => {
-    fetchData2();
-  }, []);
+  // useEffect(() => {
+  //   fetchData2();
+  // }, []);
 
   
     
@@ -228,4 +228,3 @@ function Main({navigation}){
     )
 }
 export default Main
-

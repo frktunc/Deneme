@@ -7,9 +7,11 @@ import Modal from 'react-native-modalbox';
 import CheckBox from '@react-native-community/checkbox';
 import { ScrollView } from 'react-native-gesture-handler';
 
+
 const LongText = ({ text }) => {
   const [showMore, setShowMore] = useState(false);
-
+  
+  
   const toggleShowMore = () => {
     setShowMore(!showMore);
   };
@@ -123,38 +125,30 @@ function Doktordetails() {
           <View>
   <Text style={styles.day_container}>
     <Text style={styles.day}>Pazartesi:</Text>
-    <Text style={styles.day_saat}>09.00-22.00</Text>
+    <Text style={styles.day_saat}>09.00-17.00</Text>
   </Text>
 
   <Text style={styles.day_container}>
     <Text style={styles.day}>Salı:</Text>
-    <Text style={styles.day_saat}>09.00-22.00</Text>
+    <Text style={styles.day_saat}>09.00-17.00</Text>
   </Text>
 
   <Text style={styles.day_container}>
     <Text style={styles.day}>Çarşamba:</Text>
-    <Text style={styles.day_saat}>09.00-22.00</Text>
+    <Text style={styles.day_saat}>09.00-17.00</Text>
   </Text>
 
   <Text style={styles.day_container}>
     <Text style={styles.day}>Perşembe:</Text>
-    <Text style={styles.day_saat}>09.00-22.00</Text>
+    <Text style={styles.day_saat}>09.00-17.00</Text>
   </Text>
 
   <Text style={styles.day_container}>
     <Text style={styles.day}>Cuma:</Text>
-    <Text style={styles.day_saat}>09.00-22.00</Text>
+    <Text style={styles.day_saat}>09.00-17.00</Text>
   </Text>
 
-  <Text style={styles.day_container}>
-    <Text style={styles.day}>Cumartesi:</Text>
-    <Text style={styles.day_saat}>09.00-22.00</Text>
-  </Text>
-
-  <Text style={styles.day_container}>
-    <Text style={styles.day}>Pazar:</Text>
-    <Text style={styles.day_saat}>10.00-14.00</Text>
-  </Text>
+  
   <View style={{justifyContent:'center',alignItems:'center'}}>
   <Text style={{color:'red',fontSize:18}}> Randevu Almak istediğiniz Günü Seçiniz</Text>
   </View>
