@@ -27,6 +27,7 @@ function DoktorCard({ navigation }) {
       .then((response) => {
         const fetchedData = response.data.data;
         console.log('GET isteği başarılı:', fetchedData[0]);
+        console.log(fetchedData.length);
         setData([...data, ...fetchedData]);
       setPage(page + 1);
       setLoading(false);

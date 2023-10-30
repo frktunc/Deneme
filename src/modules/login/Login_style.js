@@ -1,7 +1,10 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet,Dimensions } from "react-native";
 import  Colors from '../../styles/color'
 import { color } from "react-native-elements/dist/helpers";
 import { colors } from "react-native-elements";
+
+  const{width,height} = Dimensions.get('window')
+
 const styles = StyleSheet.create({
 main_container:{
 flex:1,
@@ -70,6 +73,35 @@ input: {
     color:'#738bef',
     fontSize:18
   },
+  doktor_login_container:{
+    paddingTop:20,
+    justifyContent:'center',
+    alignItems:'center'
+  },
+  doktor_login_text:{
+    fontSize:18,
+    fontWeight:'bold'
+  },
+  doktor_login_container2:{
+    paddingTop:10
+  },
+  modal_container:
+    {
+          position: 'absolute',
+          bottom: 0,
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: height * 0.6,
+          // width: width * 0.5,
+          
+        },
+        modal_main_text:{
+          fontSize:19
+        },
+        text_ınput_container:{
+          borderWidth:1,
+          
+        }
   
 })
 export default styles

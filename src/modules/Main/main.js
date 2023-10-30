@@ -91,7 +91,12 @@ function Main({navigation}){
 
       const fetchData = async () => {
         try {
-          const response = await axios.get('http://10.0.2.2:3000/api/patient/profile');
+          const response = (await axios.get('http://10.0.2.2:3000/api/patient/profile',{
+            headers: {
+              'Authorization': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dnZWRJbiI6dHJ1ZSwidXNlclJvbGUiOiJQYXRpZW50IiwidXNlcklkIjoiNjUzZTVjNWUyMzUxMDhjM2M1NDQ5YWI5IiwiaWF0IjoxNjk4NTg1OTQxfQ.qLAjbGe3cNdvleUP3BVO8tIjOvqYdLLY3_HhJnoNkNQ"
+            }
+          }))
+            
           console.log(response.data.data);
           setWeight(response.data.data.weight);
           setHeight(response.data.data.height);
