@@ -5,6 +5,9 @@ import { showMessage, hideMessage } from "react-native-flash-message";
 import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useSelector, useDispatch } from 'react-redux';
+
 const bloodKind = [
  
    {label: 'A(RH)-', value:'A(RH)-'},
@@ -18,15 +21,19 @@ const bloodKind = [
 ]
 
 function ModalPage({navigation}) {
-  
+
+  const token = useSelector((state)=>state.auth.token);
+
   const [editedName, setEditedName] = useState('');
+  const [editedSurname, setEditedSurname] = useState('');
   const [editedAge, setEditedAge] = useState('');
   const[editHeight,setEditHeight] = useState('');
   const[editWeight,setEditWeight] = useState('');
   const[editBlood,setEditBlood] = useState('');
 
   const userData = {
-    fullName : editedName,
+    name : editedName,
+    surname: editedSurname,
     bloodGroup: editBlood,
     height: editHeight,
     weight: editWeight,
@@ -34,20 +41,18 @@ function ModalPage({navigation}) {
   }
     
    
-  
-
-  const handleNameChange = (text) => {
-    const uppercaseText = text.toUpperCase(); 
-    setEditedName(uppercaseText); 
-  };
 
   
   
-
-  function handleİnformations(){
+   function handleİnformations(){
     console.log(userData)
-    axios.post('http://10.0.2.2:3000/api/patient/update',userData)
-    .then(response => {
+
+    axios.post('http://10.0.2.2:3000/api/patient/update',userData,{
+      headers: {
+        'Authorization': token.data
+      },
+    }) 
+    .then((response) => {
 
       const responseData = response.data;
       console.log(response)
@@ -57,6 +62,7 @@ function ModalPage({navigation}) {
       })
     })
     .catch(error => {
+      // console.log(token)
       console.log(error)
       showMessage({
         type: 'danger',
@@ -76,19 +82,23 @@ function ModalPage({navigation}) {
         </Text>
       </View>
       <View style={styles.text_continer}>
+
       <Text style={styles.text_style}>İsim Bilgileriniz:</Text>
-      <TextInput style={styles.input_style} />
+      <TextInput style={styles.input_style}  value={editedName} onChangeText={(text) => setEditedName((text))} />
+
       <Text style={styles.text_style}>Soyisim Bilgileriniz:</Text>
-      <TextInput style={styles.input_style} />
+      <TextInput style={styles.input_style}  value={editedSurname} onChangeText={(text) => setEditedSurname((text))} />
+
       <Text  style={styles.text_style}>Yaş Bilgileriniz: </Text>
       <TextInput keyboardType="numeric" style={styles.input_style} value={editedAge} onChangeText={(text) => setEditedAge((text))} />
+
       <Text style={styles.text_style}>Kilo Bilgileriniz:</Text>
       <TextInput keyboardType="numeric" style={styles.input_style} value={editWeight} onChangeText={(text) => setEditWeight(parseInt(text))} />
+
       <Text  style={styles.text_style}>Boy Bilgileriniz:</Text>
       <TextInput keyboardType="numeric" style={styles.input_style} value={editHeight} onChangeText={(text) => setEditHeight(parseInt(text))} />
-      <Text  style={styles.text_style}>Kan Grubu Bilgileriniz:</Text>
-      {/* {bloodKind.map((bloodType) => {console.log(bloodType.value)})} */}
-      
+
+      <Text  style={styles.text_style}>Kan Grubu Bilgileriniz:</Text>     
       <Picker
       style={styles.pickker_input}
       selectedValue={editBlood}

@@ -8,11 +8,11 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { launchImageLibrary } from "react-native-image-picker";
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import axios from "axios";
-
-
+import { useSelector, useDispatch } from 'react-redux';
+import { setToken } from "../../Redux/authSlice";
 
 function Main({navigation}){
-  const[fullName,setFullName] = useState('');
+  const[surname,setSurname] = useState('');
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
   const[weight,setWeight] = useState('');
@@ -27,6 +27,8 @@ function Main({navigation}){
 
   const [selectedImage, setSelectedImage] = useState('');
 
+  const token = useSelector((state)=>state.auth.token);
+  const dispatch = useDispatch();
 
   const openImagePicker =async () => {
     const permissionsStatus = await check(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
@@ -91,52 +93,31 @@ function Main({navigation}){
 
       const fetchData = async () => {
         try {
+
           const response = (await axios.get('http://10.0.2.2:3000/api/patient/profile',{
             headers: {
-              'Authorization': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dnZWRJbiI6dHJ1ZSwidXNlclJvbGUiOiJQYXRpZW50IiwidXNlcklkIjoiNjUzZTVjNWUyMzUxMDhjM2M1NDQ5YWI5IiwiaWF0IjoxNjk4NTg1OTQxfQ.qLAjbGe3cNdvleUP3BVO8tIjOvqYdLLY3_HhJnoNkNQ"
+              'Authorization': token.data,
             }
           }))
-            
+         
           console.log(response.data.data);
+          setName(response.data.data.name)
+          setSurname(response.data.data.surname);
           setWeight(response.data.data.weight);
           setHeight(response.data.data.height);
           setBloodGroup(response.data.data.bloodGroup);
           setMassIndex(response.data.data.MassIndex)
           setAge(response.data.data.age)
-          setFullName(response.data.data.fullName)
+          
           
         }catch(error) {
+          console.log('first')
           console.error('veriler çekilmedi ',error)
+          console.log(token.data);
         }
       }
 
-      // doktor fake get
-      // const fetchData2 = async () => {
-      //   try {
-      //     const response = await axios.get('http://10.0.2.2:3000/api/patient/appointments/');
-      //     const firstAppointment = response.data.data[0];
-      //     console.log(response)
-      //     if (firstAppointment) {
-      //       const appointmentName = firstAppointment.name; // Randevu adı
-      //       const doctorName = firstAppointment.doctor.name; // Doktor adı
-      //       const doctorSpecialization = firstAppointment.doctor.specialization; // Doktor uzmanlık alanı
-      //       const hospitalName = firstAppointment.doctor.location.hospitalName; // Hastane adı
-      //       const city = firstAppointment.doctor.location.city; // Şehir
-      //       const appointmentDate = firstAppointment.date; // Randevu tarihi
-      //       const isAvailable = firstAppointment.isAvailable; // Kullanılabilir mi?
-      //       setName(doctorName);
-      //       setrandevuT(appointmentDate);
-      //       setHastane(hospitalName);
-      //       setUzmanlık(doctorSpecialization)
-      //     }
-          
-          
-          
-          
-      //   }catch(error) {
-      //     console.error('veriler çekilmedi doktor ',error)
-      //   }
-      // }
+     
      
 
       //picker için permissions
@@ -154,10 +135,6 @@ function Main({navigation}){
   useEffect(() => {
     fetchData();
   }, []);
-
-  // useEffect(() => {
-  //   fetchData2();
-  // }, []);
 
   
     
@@ -191,7 +168,7 @@ function Main({navigation}){
     </View>
 
           <View style={styles.person_infarmations}>
-    <Text style={styles.person_ad}>{fullName}</Text>
+    <Text style={styles.person_ad}>{name} {surname}</Text>
     <Text style={styles.person_text}>Boyunuz: <Text style={{color:Colors.grey}}>{height} cm</Text></Text>
     <Text style={styles.person_text}>Kilonuz: <Text style={{color:Colors.grey}}>{weight} kg</Text></Text>
     <Text style={styles.person_text}>Yaşınız:  <Text style={{color:Colors.grey}}>{age}</Text></Text>
@@ -215,7 +192,7 @@ function Main({navigation}){
     </View>
 
           <View style={styles.person_infarmations}>
-    <Text style={styles.person_ad}>{name}</Text>
+    <Text style={styles.person_ad}></Text>
     <Text style={styles.person_text}>Uzmanlık: <Text style={{color:Colors.grey}}>{specialization}</Text></Text>
     <Text style={styles.person_text}>Hastane: <Text style={{color:Colors.grey}}>{hospitalName}</Text></Text>
     <Text style={styles.person_text}>Randevu Tarihi:  <Text style={{color:Colors.grey}}>{date}</Text></Text>

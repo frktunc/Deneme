@@ -1,4 +1,8 @@
 import React from 'react';
+
+import { Provider } from 'react-redux';
+import store from './src/Redux/store';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -11,6 +15,7 @@ import KayıtEkran from './src/modules/Register/Register';
 import AnaEkran from './src/modules/Main/main';
 import ModalEkran from './src/components/Modal'
 import RandevuEkran from './src/modules/Appointment/appointment';
+import DoktorRandevu from './src/modules/Appointment/DoctorAppointment';
 import DanışEkran from './src/modules/Consult/consult';
 import OnlineEkran from './src/modules/OnlineMeeting/online';
 import  Colors  from './src/styles/color';
@@ -19,6 +24,7 @@ import Doktor_Login from './src/modules/login/Doktor_Login';
 import DoktorMain from './src/modules/Main/DoktorMain'
 import DoktorModal from './src/components/DoktorModal'
 
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -26,6 +32,7 @@ const Tab = createBottomTabNavigator();
 function MainTabs() {
   
   return (
+    <Provider store={store}>
     <Tab.Navigator
     keyboardHidesTabBar={true}
       screenOptions={({ route }) => ({
@@ -57,6 +64,7 @@ function MainTabs() {
       <Tab.Screen name="Uzmana Danış" component={DanışEkran} />
       <Tab.Screen name="Online Muayane" component={OnlineEkran} />
     </Tab.Navigator>
+    </Provider>
   );
 }
 
@@ -64,6 +72,9 @@ function MainTabs() {
 function MainTabs2() {
   
   return (
+  <Provider store={store}>
+
+  
     <Tab.Navigator
     keyboardHidesTabBar={true}
       screenOptions={({ route }) => ({
@@ -91,10 +102,11 @@ function MainTabs2() {
        
        
       <Tab.Screen name="Profil Sayfam" component={DoktorMain} />
-       <Tab.Screen name="Randevularım" component={RandevuEkran} />
+       <Tab.Screen name="Randevularım" component={DoktorRandevu} />
       <Tab.Screen name="Hasta Mesajlarım" component={DanışEkran} />
       <Tab.Screen name="Online Muayane" component={OnlineEkran} />
     </Tab.Navigator>
+    </Provider>
   );
 }
 
@@ -102,7 +114,8 @@ function MainTabs2() {
 export default function App() {
 
   return (
-    <NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
     
       <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
        <Stack.Screen name="Login" component={GirişEkran} />
@@ -116,6 +129,6 @@ export default function App() {
       </Stack.Navigator>
       <FlashMessage position="top" /> 
     </NavigationContainer>
-    
+    </Provider>
   );
 }

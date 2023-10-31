@@ -87,6 +87,7 @@ input: {
   },
   modal_container:
     {
+      
           position: 'absolute',
           bottom: 0,
           justifyContent: 'center',
@@ -96,11 +97,29 @@ input: {
           
         },
         modal_main_text:{
-          fontSize:19
+          fontSize:19,
+          fontWeight:'bold'
         },
         text_ınput_container:{
           borderWidth:1,
           
+        },
+        modal_box_container:{
+        flexDirection: 'row',
+         justifyContent: 'center',
+         alignItems: 'center',
+         padding:30,
+        
+    
+        },
+        modal_box_text:{
+          width: 55,
+          height: 55,
+          borderWidth: 1,
+          textAlign: 'center',
+          borderRadius:100,
+          backgroundColor:'#c4c4c4',
+          borderColor:'#8791ff'
         }
   
 })

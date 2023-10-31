@@ -1,6 +1,5 @@
 import { Alert, Text, TouchableOpacity, View ,ActivityIndicator,Button,Dimensions} from 'react-native'
-import React, { useState, useEffect } from 'react'
-import Colors from '../../styles/color'
+import React, { useState, useEffect ,useRef} from 'react'
 import CustomButton from '../../components/Button'
 import styles from './Login_style'
 import axios from 'axios'
@@ -9,17 +8,33 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { TextInput } from 'react-native-gesture-handler'
 import CheckBox from '@react-native-community/checkbox'
 import Modal from 'react-native-modalbox'
+import { setToken } from '../../Redux/authSlice'
+import { useDispatch } from 'react-redux'
 
 function Login({ navigation }) {
-
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [verificationCode, setVerificationCode] = useState('');
+  
+const [isModalVisible, setModalVisible] = useState(false);
   const [rUrl,setRUrl] = useState('');
-  const [verifyyCode,setVerifyCode] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const[isLoading, setIsLoading] = useState(false);
+  // const [remainingTries,setRemainingTries] = useState(3);
+
+  const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', '']);
+  const inputRefs = useRef([]);
+
+  const dispatch = useDispatch();
+
+  const handleChange = (text,index) => {
+    const updateCode = [...verificationCode];
+    updateCode[index] = text;
+    setVerificationCode(updateCode);
+
+    if(text && index < verificationCode.length - 1) {
+      inputRefs.current[index +1].focus();
+    }
+  }
 
   // Kullanıcı Bilgilerini Kaydet
   useEffect(() => {
@@ -33,8 +48,7 @@ function Login({ navigation }) {
     // Örneğin, axios veya fetch kullanarak doğrulama kodunu alabilirsiniz.
     // Şu anda sadece boş bir string olarak ayarladım, ancak gerçek bir kod almalısınız.
     
-    const serverVerificationCode = '';
-    setVerificationCode(serverVerificationCode);
+    
     setModalVisible(true);
   };
   const closeModal = () => {
@@ -42,17 +56,32 @@ function Login({ navigation }) {
   };
 
   const verifyCode = () => {
-    console.log(rUrl)
-    console.log(verifyyCode)
-    axios.post(rUrl,{
-      verifyCode:verifyyCode   
-    }).then(response =>  {
-      if(response.data.success) {
-        closeModal()
-      }
-    })
+    const completeCode = verificationCode.join('');
+    console.log(rUrl);
+    console.log(completeCode);
     
-  };
+    axios.post(rUrl,{verifyCode:completeCode}).then(response=>{
+      if(response.data.success){
+        closeModal();
+        navigation.navigate('Main');
+        showMessage({
+          message: 'Doğrulamanız Başarı ile Gerçekleşti',
+          type: 'success',
+        });
+      }
+      // else(remainingTries > 0) 
+      //   {
+      //     console.log(remainingTries)
+      //     setRemainingTries(remainingTries - 1);
+          
+      //     showMessage({
+      //       message: 'Yanlış Doğrulama Kodu ${remainingTries - 1} hakkınız kaldı',
+      //       type:'danger'
+      //     })
+      //   } 
+      
+    })
+  }
 
   const retrieveData = async () => {
     try {
@@ -109,9 +138,13 @@ function Login({ navigation }) {
         const url = response.request.responseURL
         console.log(response.data)
         console.log(url)
+
+        dispatch(setToken(response.data));
+
         if (url.startsWith('http://10.0.2.2:3000/api/auth/verify/')) {
           setRUrl(response.request.responseURL);
           openModal();
+          
         } else {
           // URL beklenen URL ile başlamıyorsa giriş işlemi yap
           const responseData = response.data;
@@ -218,12 +251,19 @@ function Login({ navigation }) {
         <View style={{}}>
         <Text style={styles.modal_main_text}>Mailinize Gelen Doğrulama Kodunuzu Giriniz</Text>
         </View>
-       
+        <View style={styles.modal_box_container}>
+      {verificationCode.map((_,index) => (
         <TextInput
-        style={styles.text_ınput_container}
-          value={verifyyCode}
-          onChangeText={text => setVerifyCode(text)}
+          key={index}
+          style={styles.modal_box_text}
+          value={verificationCode[index]}
+          onChangeText={(text) => handleChange(text, index)}
+          keyboardType="numeric"
+          ref={(ref) => (inputRefs.current[index] = ref)}
+          maxLength={1}
         />
+      ))}
+    </View>
        
         <Button title="Doğrula" onPress={verifyCode} />
       </Modal>
