@@ -12,8 +12,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setToken } from "../../Redux/authSlice";
 
 function Main({navigation}){
-  const[surname,setSurname] = useState('');
-  const [name, setName] = useState('');
+ 
+  const [fullName, setFullName] = useState('');
   const [age, setAge] = useState('');
   const[weight,setWeight] = useState('');
   const[height,setHeight] = useState('');
@@ -22,12 +22,14 @@ function Main({navigation}){
 
   const[specialization,setUzmanlık] = useState('');
   const[hospitalName,setHastane] = useState('');
-  const[date,setrandevuT] =useState('');
+  const[date,setrandevu] =useState('');
   // const[doktorad, setDoktorad] = useState('');
 
   const [selectedImage, setSelectedImage] = useState('');
 
   const token = useSelector((state)=>state.auth.token);
+  const userRole = useSelector((state) => state.auth.userRole)
+
   const dispatch = useDispatch();
 
   const openImagePicker =async () => {
@@ -61,15 +63,16 @@ function Main({navigation}){
       }
     })
   }
-   // Resim post
+  //  Resim post
     // const formData = new FormData();
     // formData.append('profilephoto', {
     //   uri: selectedImage,
     //   type: 'image/jpeg',
     //   name: 'user_profile_image.jpg',
     // });
-    // axios.post('http://10.0.2.2:3000/api/patient/update?pf=1',formData,{
+    // axios.post('http://10.0.2.2:3000/api/patient/update-profile-photo',formData,{
     //   headers:{
+    //     'Authorization': token.data,
     //     'Content-Type': 'multipart/form-data',
     //   },
     // })
@@ -82,8 +85,15 @@ function Main({navigation}){
     // })
 
     
-    // axios.get('http://192.168.1.22:3000/api/patient/update?gp=1').then(response => {
-    //   console.log(response)
+    // axios.get('http://10.0.2.2:3000/api/patient/profile-photo',{
+    //   headers:{
+    //     'Authorization': token.data,
+        
+    //   },
+    // }).then(response => {
+    //   console.log('sa')
+    //   console.log(response.data)
+    //   console.log('first')
     // } )
  
 
@@ -101,8 +111,8 @@ function Main({navigation}){
           }))
          
           console.log(response.data.data);
-          setName(response.data.data.name)
-          setSurname(response.data.data.surname);
+         
+          setFullName(response.data.data.fullName);
           setWeight(response.data.data.weight);
           setHeight(response.data.data.height);
           setBloodGroup(response.data.data.bloodGroup);
@@ -117,6 +127,28 @@ function Main({navigation}){
         }
       }
 
+      // const fetchDataDoctor = async () => {
+      //   try {
+
+      //     const response = (await axios.get('http://10.0.2.2:3000/api/patient/profile',{
+      //       headers: {
+      //         'Authorization': token.data,
+      //       }
+      //     }))
+         
+      //     console.log(response.data.data);
+      //     // setUzmanlık(response.data.data.)
+      //     // setHastane(response.data.data.);
+      //     // setrandevu(response.data.data.);
+          
+          
+          
+      //   }catch(error) {
+      //     console.log('first')
+      //     console.error('veriler çekilmedi ',error)
+      //     console.log(token.data);
+      //   }
+      // }
      
      
 
@@ -135,6 +167,10 @@ function Main({navigation}){
   useEffect(() => {
     fetchData();
   }, []);
+  
+  // useEffect(() => {
+  //   fetchDataDoctor();
+  // }, []);
 
   
     
@@ -155,7 +191,7 @@ function Main({navigation}){
     < TouchableOpacity onPress={openImagePicker} style={styles.image_view}>
       {selectedImage ? (
         <Image style={styles.image_view}
-            source={{uri:selectedImage}} />
+            source={{uri:"https://healtapp-profilephotos.s3.amazonaws.com/6541668b27224927632d9564.jpeg"}} />
       ):  (
         <Image style={styles.image_view}source={require('../../../assets/image/default-avatar.png')} />
       )}
@@ -166,9 +202,10 @@ function Main({navigation}){
 
         </TouchableOpacity>
     </View>
-
+    
           <View style={styles.person_infarmations}>
-    <Text style={styles.person_ad}>{name} {surname}</Text>
+            
+    <Text style={styles.person_ad}>{fullName}</Text>
     <Text style={styles.person_text}>Boyunuz: <Text style={{color:Colors.grey}}>{height} cm</Text></Text>
     <Text style={styles.person_text}>Kilonuz: <Text style={{color:Colors.grey}}>{weight} kg</Text></Text>
     <Text style={styles.person_text}>Yaşınız:  <Text style={{color:Colors.grey}}>{age}</Text></Text>
@@ -177,7 +214,7 @@ function Main({navigation}){
         </View>
 
         <Card.Divider />
-        <Text style={{ marginBottom: 10 }}>Kart içeriği buraya gelebilir.</Text>
+        <Text style={{ marginBottom: 10 }}>Kart içeriği buraya gelebilir. </Text>
         
       </Card>
 

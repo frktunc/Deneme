@@ -5,6 +5,7 @@ import { showMessage, hideMessage } from "react-native-flash-message";
 import { ScrollView } from 'react-native-gesture-handler';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 const RankKind = [
  
    {label: 'Junior Doctor', value:'Junior Doctor'},
@@ -13,6 +14,18 @@ const RankKind = [
    {label: 'Specialist', value:'Specialist'},
    {label: 'Chief Doctor', value:'Chief Doctor'},
    
+]
+
+const SpecializationMap = [
+  {label: 'Cerrahi', value:'Cerrahi'},
+  {label: 'Diş Hekimi', value:'Diş Hekimi'},
+  {label: 'Kulak Burun Boğaz', value:'Kulak Burun Boğaz'},
+  {label: 'Çocuk Doktoru', value:'Çocuk Doktoru'},
+  {label: 'Psikoloji', value:'Psikoloji'},
+  {label: 'Diyetisyen', value:'Diyetisyen'},
+  {label: 'Kardiyoloji', value:'Kardiyoloji'},
+  {label: 'Onkolog', value:'Onkolog'},
+  {label: 'Ürolog', value:'Ürolog'},
 ]
 
 function ModalPage() {
@@ -26,6 +39,7 @@ function ModalPage() {
 //   const [editedRate,setEditedRate] = useState('');
   const [editedIban,setEditedIban] = useState('');
   
+  const token = useSelector((state) => state.auth.token)
 
   const userData = {
     name : editedName,
@@ -57,7 +71,11 @@ function ModalPage() {
 
   function handleİnformations(){
     console.log(userData)
-    axios.post('http://10.0.2.2:3000/api/doctor/profile',userData)
+    axios.post('http://10.0.2.2:3000/api/doctor/profile',userData,{
+      headers:{
+        'Authorization':token.data
+      }
+    })
     .then(response => {
 
       const responseData = response.data;
@@ -95,9 +113,31 @@ function ModalPage() {
       <TextInput style={styles.input_style} value={editedSurname} onChangeText={(text) => handleSurnameChange((text))} />
 
       <Text  style={styles.text_style}>Branş Bilgileriniz: </Text>
-      <TextInput  style={styles.input_style} value={editedSpecialization} onChangeText={(text) => setEditedSpecialization((text))} />
+      <Picker
+      style={styles.pickker_input}
+      selectedValue={editedSpecialization}
+     onValueChange={(itemValue, itemIndex) => setEditedSpecialization(itemValue)}
+
+      >
+    {SpecializationMap.map((RankType) => (
+      
+    <Picker.Item
+    
+    style={styles.picker_style}
+      key={RankType.value}
+      label={RankType.label}
+      value={RankType.value}
+    />
+  ))}
+  
+</Picker>
+
 
       <Text style={styles.text_style}>Ünvan Bilgileriniz:</Text>
+
+      
+
+
       <Picker
       style={styles.pickker_input}
       selectedValue={editedRank}

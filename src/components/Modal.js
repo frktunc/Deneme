@@ -90,13 +90,13 @@ function ModalPage({navigation}) {
       <TextInput style={styles.input_style}  value={editedSurname} onChangeText={(text) => setEditedSurname((text))} />
 
       <Text  style={styles.text_style}>Yaş Bilgileriniz: </Text>
-      <TextInput keyboardType="numeric" style={styles.input_style} value={editedAge} onChangeText={(text) => setEditedAge((text))} />
+      <TextInput keyboardType="numeric"  style={styles.input_style} value={editedAge} onChangeText={(text) => setEditedAge(text)} />
 
       <Text style={styles.text_style}>Kilo Bilgileriniz:</Text>
-      <TextInput keyboardType="numeric" style={styles.input_style} value={editWeight} onChangeText={(text) => setEditWeight(parseInt(text))} />
+      <TextInput keyboardType="numeric" style={styles.input_style} value={editWeight.toString()} onChangeText={(text) => setEditWeight(text)} />
 
       <Text  style={styles.text_style}>Boy Bilgileriniz:</Text>
-      <TextInput keyboardType="numeric" style={styles.input_style} value={editHeight} onChangeText={(text) => setEditHeight(parseInt(text))} />
+      <TextInput keyboardType="numeric" style={styles.input_style} value={editHeight.toString()} onChangeText={(text) => setEditHeight(text)} />
 
       <Text  style={styles.text_style}>Kan Grubu Bilgileriniz:</Text>     
       <Picker

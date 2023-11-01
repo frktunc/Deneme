@@ -7,6 +7,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { launchImageLibrary } from "react-native-image-picker";
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 
 
@@ -23,6 +24,7 @@ const[workingHoursEnd,setWorkingHoursEnd] = useState('');
 const[about,setAbout] = useState('');
 const [selectedImage, setSelectedImage] = useState('');
 
+const token = useSelector((state)=> state.auth.token);
 
 const openENabiz = () => {
   Linking.openURL('https://www.enabiz.gov.tr/');
@@ -81,7 +83,11 @@ const openTwitter = () => {
 
       const fetchData = async () => {
         try {
-          const response = await axios.get('http://10.0.2.2:3000/api/doctor/profile');
+          const response = await axios.get('http://10.0.2.2:3000/api/doctor/profile',{
+            headers:{
+              'Authorization': token.data,
+            }
+          });
           console.log(response.data);
           setName(response.data.data.name)
           setSurname(response.data.data.surname)
@@ -171,17 +177,17 @@ const openTwitter = () => {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={openEDevlet}>
-        <Icon name="address-card" size={30} color="#05a5d1" />
+        <Icon name="address-card" size={30} color="#05a5d1" style={{paddingLeft:10}} />
         <Text>e-Devlet</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={openWhatsApp}>
-        <Icon name="whatsapp" size={30} color="#31661b" />
+        <Icon name="whatsapp" size={30} color="#31661b" style={{paddingLeft:15}} />
         <Text>WhatsApp</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={openTwitter}>
-        <Icon name="twitter" size={30} color="#174082" />
+        <Icon name="twitter" size={30} color="#174082" style={{paddingLeft:10}} />
         <Text>Twitter</Text>
       </TouchableOpacity>
 

@@ -9,6 +9,7 @@ import { showMessage } from 'react-native-flash-message';
 import { setToken } from '../../Redux/authSlice'
 import { useDispatch } from 'react-redux'
 import Modal from 'react-native-modalbox'
+import { decode } from "react-native-pure-jwt";
 
 function Doktor_Login({navigation}){
 
@@ -110,11 +111,22 @@ useEffect(() => {
         email,
         password
       })
-        .then(response => {
+        .then(async response => {
           const url = response.request.responseURL
            
-          dispatch(setToken(response.data));
-          // console.log(responseData.success);
+          const decoded = await decode(response.data.data,"nanaHUI3JOTw/+tGPCBTzSBWthw", {skipValidation: true});
+          const userRole = decoded.payload.userRole;
+          const loggedIn = decoded.payload.loggedIn;
+
+
+          dispatch(
+            setToken({
+              token: response.data, // Token değeri
+              userRole: decoded.payload.userRole, // Kullanıcı rolü
+              loggedIn: decoded.payload.loggedIn, // Giriş yapıldı mı?
+            })
+          );
+         
           if (url.startsWith('http://10.0.2.2:3000/api/auth/verify/')) {
             setRUrl(response.request.responseURL);
             openModal();
@@ -125,7 +137,7 @@ useEffect(() => {
             const responseData = response.data;
             
             // console.log(responseData.success);
-            if (responseData.success) {
+            if (responseData.success && userRole ==='Doctor') {
               showMessage({
                 message: responseData.message,
                 type: 'success',
@@ -137,6 +149,12 @@ useEffect(() => {
                 navigation.navigate('Main2');
                 handleLoginStrg();
               }, 1000);
+            }
+            else{
+              showMessage({
+                message:'Oturum Rolünüz Doğru Değil',
+                type:'warning'
+              })
             }
           }
         })
