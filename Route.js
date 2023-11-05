@@ -7,6 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 import FlashMessage from "react-native-flash-message";
 
@@ -25,8 +26,11 @@ import DoktorMain from './src/modules/Main/DoktorMain'
 import DoktorModal from './src/components/DoktorModal'
 
 
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
+
 
 
 function MainTabs() {
@@ -111,6 +115,7 @@ function MainTabs2() {
 }
 
 
+
 export default function App() {
 
   return (
@@ -132,3 +137,5 @@ export default function App() {
     </Provider>
   );
 }
+
+

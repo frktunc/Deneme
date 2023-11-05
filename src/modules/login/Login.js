@@ -124,7 +124,7 @@ const [isModalVisible, setModalVisible] = useState(false);
         message: 'E-mail ve şifre alanları zorunlu alanlardır',
         type: 'danger',
       });
-      
+      setIsLoading(false);
     } else {
       axios.post('http://10.0.2.2:3000/api/auth/login', {
         email,
@@ -135,26 +135,30 @@ const [isModalVisible, setModalVisible] = useState(false);
         console.log(response.data)
         console.log(url)
         
-        const decoded = await decode(response.data.data,"nanaHUI3JOTw/+tGPCBTzSBWthw", {skipValidation: true});
-        const userRole = decoded.payload.userRole;
-        const loggedIn = decoded.payload.loggedIn;
+        
 
-        dispatch(
-          setToken({
-            token: response.data, // Token değeri
-            userRole: decoded.payload.userRole, // Kullanıcı rolü
-            loggedIn: decoded.payload.loggedIn, // Giriş yapıldı mı?
-          })
-        );
-
-        if (url.startsWith('http://10.0.2.2:3000/api/auth/verify/')) {
-          setRUrl(response.request.responseURL);
+        if (url.startsWith('http://10.0.2.2:3000/api/auth/generate-otp/')) {
+          const updatedUrl = url.replace('generate-otp', 'verify');
+          console.log(updatedUrl)
+          setRUrl(updatedUrl);
           openModal();
           
         } else {
           
           const responseData = response.data;
           console.log("arabab",responseData)
+
+          const decoded = await decode(response.data.data,"nanaHUI3JOTw/+tGPCBTzSBWthw", {skipValidation: true});
+          const userRole = decoded.payload.userRole;
+          const loggedIn = decoded.payload.loggedIn;
+
+          dispatch(
+            setToken({
+              token: response.data, // Token değeri
+              userRole: decoded.payload.userRole, // Kullanıcı rolü
+              loggedIn: decoded.payload.loggedIn, // Giriş yapıldı mı?
+            })
+          );
 
           if (responseData.success && userRole === 'Patient') {
 
@@ -176,7 +180,8 @@ const [isModalVisible, setModalVisible] = useState(false);
               showMessage({
                 message: 'Oturum Rolünüz doğru değil',
                 type:'warning'
-              })
+              });
+              setIsLoading(false);
           }
         }
       })
@@ -234,6 +239,7 @@ const [isModalVisible, setModalVisible] = useState(false);
         </View>
         {isLoading ? (
         <ActivityIndicator size="large" color="#0000ff" />
+        
       ) : (
         <CustomButton title="Giriş Yap" onPress={handleLoginAndNavigate} />
         

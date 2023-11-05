@@ -26,6 +26,7 @@ function DoktorCard({ navigation }) {
     .get(`http://10.0.2.2:3000/api/appointment/${page + 1}`)
       .then((response) => {
         const fetchedData = response.data.data;
+        console.log(response)
         console.log('GET isteği başarılı:', fetchedData[0]);
         console.log(fetchedData.length);
         setData([...data, ...fetchedData]);

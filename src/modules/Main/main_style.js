@@ -15,6 +15,10 @@ flex:1,
         borderRadius:100,
         
     },
+    icon_container:{
+        justifyContent:'space-between',
+        flexDirection:'row'
+    },
     resim_text:{
        textAlign:'center',
        marginTop:3,

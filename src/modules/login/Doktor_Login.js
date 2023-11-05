@@ -40,6 +40,8 @@ useEffect(() => {
     retrieveData();
   }, [])
 
+ 
+
   const openModal = () => {
 
     setModalVisible(true);
@@ -56,7 +58,7 @@ useEffect(() => {
     
     axios.post(rUrl,{verifyCode:completeCode}).then(response=>{
       if(response.data.success){
-        closeModal();
+        
         navigation.navigate('Main');
         showMessage({
           message: 'Doğrulamanız Başarı ile Gerçekleşti',
@@ -105,7 +107,7 @@ useEffect(() => {
         message: 'E-mail ve şifre alanları zorunlu alanlardır',
         type: 'danger',
       });
-      
+      setIsLoading(false);
     } else {
       axios.post('http://10.0.2.2:3000/api/auth/login', {
         email,
@@ -114,27 +116,29 @@ useEffect(() => {
         .then(async response => {
           const url = response.request.responseURL
            
-          const decoded = await decode(response.data.data,"nanaHUI3JOTw/+tGPCBTzSBWthw", {skipValidation: true});
-          const userRole = decoded.payload.userRole;
-          const loggedIn = decoded.payload.loggedIn;
-
-
-          dispatch(
-            setToken({
-              token: response.data, // Token değeri
-              userRole: decoded.payload.userRole, // Kullanıcı rolü
-              loggedIn: decoded.payload.loggedIn, // Giriş yapıldı mı?
-            })
-          );
          
-          if (url.startsWith('http://10.0.2.2:3000/api/auth/verify/')) {
-            setRUrl(response.request.responseURL);
+         
+          if (url.startsWith('http://10.0.2.2:3000/api/auth/generate-otp/')) {
+            const updatedUrl = url.replace('generate-otp', 'verify');
+            console.log(updatedUrl)
+            setRUrl(updatedUrl);
             openModal();
-            
            
           } else {
             // URL beklenen URL ile başlamıyorsa giriş işlemi yap
             const responseData = response.data;
+            const decoded = await decode(response.data.data,"nanaHUI3JOTw/+tGPCBTzSBWthw", {skipValidation: true});
+            const userRole = decoded.payload.userRole;
+            const loggedIn = decoded.payload.loggedIn;
+  
+  
+            dispatch(
+              setToken({
+                token: response.data, // Token değeri
+                userRole: decoded.payload.userRole, // Kullanıcı rolü
+                loggedIn: decoded.payload.loggedIn, // Giriş yapıldı mı?
+              })
+            );
             
             // console.log(responseData.success);
             if (responseData.success && userRole ==='Doctor') {

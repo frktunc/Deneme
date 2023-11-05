@@ -4,12 +4,14 @@ import { Card,  } from 'react-native-elements';
 import styles from "./main_style";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import  Colors  from '../../styles/color'
+import LogoutComponent from "../DrawerContent/LogOut/logout";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { launchImageLibrary } from "react-native-image-picker";
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import axios from "axios";
 import { useSelector, useDispatch } from 'react-redux';
 import { setToken } from "../../Redux/authSlice";
+import formatISODateToTurkishWithTime from "../../FormatFunc/formatISODateToTurkishWithTime";
 
 function Main({navigation}){
  
@@ -20,6 +22,7 @@ function Main({navigation}){
   const[bloodGroup,setBloodGroup] = useState('');
   const[MassIndex,setMassIndex] = useState('');
 
+  const[name,setName] = useState('');
   const[specialization,setUzmanlık] = useState('');
   const[hospitalName,setHastane] = useState('');
   const[date,setrandevu] =useState('');
@@ -101,6 +104,8 @@ function Main({navigation}){
   
     // kullanıcı bilgileri get
 
+
+  
       const fetchData = async () => {
         try {
 
@@ -110,45 +115,49 @@ function Main({navigation}){
             }
           }))
          
-          console.log(response.data.data);
+
+          if(response.data.data !== undefined){
+           
+            setFullName(response.data.data.fullName);
+            setWeight(response.data.data.weight);
+            setHeight(response.data.data.height);
+            setBloodGroup(response.data.data.bloodGroup);
+            setMassIndex(response.data.data.MassIndex)
+            setAge(response.data.data.age)
+          }
+   
+        }catch(error) {
+          console.error('veriler çekilmedi ',error)
+          console.log(token.data);
+        }
+      }
+
+      const fetchDataDoctor = async () => {
+        try {
+
+          const responses = (await axios.get('http://10.0.2.2:3000/api/patient/appointments?latest=1',{
+            headers: {
+              'Authorization': token.data,
+            }
+          }))
          
-          setFullName(response.data.data.fullName);
-          setWeight(response.data.data.weight);
-          setHeight(response.data.data.height);
-          setBloodGroup(response.data.data.bloodGroup);
-          setMassIndex(response.data.data.MassIndex)
-          setAge(response.data.data.age)
-          
-          
+          if(responses.data.data !== undefined){
+            console.log(responses.data.data); 
+            setName(responses.data.data[0].doctor.name);
+            setUzmanlık(responses.data.data[0].doctor.specialization);
+            setHastane(responses.data.data[0].doctor.location.hospitalName);
+           
+            
+            setrandevu( formatISODateToTurkishWithTime(responses.data.data[0].date));
+          }
+         
+        
         }catch(error) {
           console.log('first')
           console.error('veriler çekilmedi ',error)
           console.log(token.data);
         }
       }
-
-      // const fetchDataDoctor = async () => {
-      //   try {
-
-      //     const response = (await axios.get('http://10.0.2.2:3000/api/patient/profile',{
-      //       headers: {
-      //         'Authorization': token.data,
-      //       }
-      //     }))
-         
-      //     console.log(response.data.data);
-      //     // setUzmanlık(response.data.data.)
-      //     // setHastane(response.data.data.);
-      //     // setrandevu(response.data.data.);
-          
-          
-          
-      //   }catch(error) {
-      //     console.log('first')
-      //     console.error('veriler çekilmedi ',error)
-      //     console.log(token.data);
-      //   }
-      // }
      
      
 
@@ -163,14 +172,15 @@ function Main({navigation}){
     }
   }
 
+  useEffect(() => {
+    fetchDataDoctor();
+  }, []);
 
   useEffect(() => {
     fetchData();
   }, []);
   
-  // useEffect(() => {
-  //   fetchDataDoctor();
-  // }, []);
+  
 
   
     
@@ -179,11 +189,15 @@ function Main({navigation}){
 <View style={styles.container}>
 <ImageBackground style={styles.image_background} source={require("../../../assets/image/background.png")}>
 <Card containerStyle={{ borderRadius: 20 }} >
-<View>
+<View style={styles.icon_container}>
 <TouchableOpacity onPress={() =>{
     navigation.navigate('Modal')
 }} >
   <Icon name="pencil" size={30} color="blue" />
+</TouchableOpacity>
+<TouchableOpacity>
+<Icon name="sign-out" size={30} color="red" />
+
 </TouchableOpacity>
 
 </View>
@@ -229,7 +243,7 @@ function Main({navigation}){
     </View>
 
           <View style={styles.person_infarmations}>
-    <Text style={styles.person_ad}></Text>
+    <Text style={styles.person_ad}>{name}</Text>
     <Text style={styles.person_text}>Uzmanlık: <Text style={{color:Colors.grey}}>{specialization}</Text></Text>
     <Text style={styles.person_text}>Hastane: <Text style={{color:Colors.grey}}>{hospitalName}</Text></Text>
     <Text style={styles.person_text}>Randevu Tarihi:  <Text style={{color:Colors.grey}}>{date}</Text></Text>

@@ -36,12 +36,22 @@ const styles = StyleSheet.create({
         position:'absolute',
         
     },
+    rank_container:{
+        position:'absolute',
+    },
     branş_text:{
         position:'absolute',
        paddingLeft:20,
-       marginLeft:200,
+       marginLeft:130,
        marginTop:40,
        fontSize:16
+    },
+    rank_text:{
+        position:'absolute',
+        paddingLeft:20,
+        marginLeft:130,
+        marginTop:65,
+        fontSize:16
     },
     Konum_container:{
         position:'absolute',

@@ -16,6 +16,19 @@ const LongText = ({ text }) => {
     setShowMore(!showMore);
   };
 
+  // axios.get('http://10.0.2.2:3000/api/patient/profile/id')
+  //   .then((response) => {
+  //     const fetchedData = response.data.data;
+  //     console.log(response)
+  //     console.log('GET isteği başarılı:', fetchedData[0]);
+  //     console.log(fetchedData.length);
+     
+  //   })
+  //   .catch((error) => {
+  //     console.error('GET isteği hatası:', error);
+  //     setLoading(false);
+  //   });
+
   return (
     <View>
         <Text style={styles.hakkımızda_text}>Doktorunuz Hakkında:</Text>
@@ -36,8 +49,8 @@ const LongText = ({ text }) => {
   );
 };
 
-function Doktordetails() {
-const {doctor} = route.params
+function Doktordetails({route}) {
+  const { doctor } = route.params;
 
   const{width,height} = Dimensions.get('window')
   const workingHours = ['08.00 - 09.00', '09.00 - 10.00','10.00 - 11.00', '11.00 - 12.00', '13.00-14.00' ,'14.00-15.00','15.00 - 16.00'];
@@ -47,6 +60,8 @@ const {doctor} = route.params
   const[selectedDay,setSelectedDay] = useState('Pazartesi');
   const[selectedHours,setSelectedHours] = useState({});
   const [selectedDate, setSelectedDate] = useState(null);
+
+
 
   const openModal = (day) => {
     setModalVisible(true);
@@ -96,16 +111,20 @@ const {doctor} = route.params
     <View style={styles.container}>
       <ImageBackground style={styles.image_background} source={require("../../../assets/image/background.png")}>
         <ScrollView>
+
         <View style={styles.main_text_container}>
           <Text style={styles.main_text}>Doktorunuz Hakkında</Text>
         </View>
         <Card containerStyle={{ borderRadius: 20 }}>
           <View style={styles.image_container}>
             <Image source={require('../../../assets/image/diyetisyen.jpg')} style={styles.doctor_image} />
-            <Text style={styles.name_text}>Dr. Faruk Serhat Tunç</Text>
+            <Text style={styles.name_text}>{doctor.name} {doctor.surname}</Text>
           </View>
           <View style={styles.branş_container}>
-            <Text style={styles.branş_text}>Dentist</Text>
+            <Text style={styles.branş_text}>{doctor.specialization}</Text>
+          </View>
+          <View style={styles.rank_container}>
+            <Text style={styles.rank_text}>{doctor.rank}</Text>
           </View>
           <View style={styles.Konum_container}>
             <Text style={styles.Konum_text}>
