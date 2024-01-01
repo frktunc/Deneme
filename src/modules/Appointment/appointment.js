@@ -237,6 +237,8 @@ const handleRandevuAl = (selectedDoctor) => {
         <Text style={styles.Doktor_name_text}>{item.name} {item.surname}</Text>
       </View>
       <View style={styles.branş_text_container}>
+
+        
         <Text style={styles.branş_text}>{item.specialization}</Text>
       </View>
       <View style={styles.name_text_container}>
