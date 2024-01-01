@@ -16,24 +16,13 @@ const LongText = ({ text }) => {
     setShowMore(!showMore);
   };
 
-  // axios.get('http://10.0.2.2:3000/api/patient/profile/id')
-  //   .then((response) => {
-  //     const fetchedData = response.data.data;
-  //     console.log(response)
-  //     console.log('GET isteği başarılı:', fetchedData[0]);
-  //     console.log(fetchedData.length);
-     
-  //   })
-  //   .catch((error) => {
-  //     console.error('GET isteği hatası:', error);
-  //     setLoading(false);
-  //   });
-
+ 
   return (
     <View>
         <Text style={styles.hakkımızda_text}>Doktorunuz Hakkında:</Text>
       <Text numberOfLines={showMore ? undefined : 2} style={styles.longText}>
-        {text}
+        
+        {/* {text} */}
       </Text>
       {!showMore && (
         <TouchableOpacity style={styles.readMoreLink_Touchable} onPress={toggleShowMore}>
@@ -80,8 +69,13 @@ function Doktordetails({route}) {
   }
   const createAppointment = () => {
     // SEÇİLEN SAATLERE GÖRE RANDEVU İŞLEMLERİNİ BURDA YAPICAM
+    const selectedHoursArray = object.keys(selectedHours).filter(
+      (hour) =>selectedHours[hour]
+    );
+    console.log('Seçilen Saatler:', selectedHoursArray);
   }
-  
+ 
+
   const renderWorkHours = (day) => {
     return (
       <View style={{flex:1}}>
@@ -117,19 +111,19 @@ function Doktordetails({route}) {
         </View>
         <Card containerStyle={{ borderRadius: 20 }}>
           <View style={styles.image_container}>
-            <Image source={require('../../../assets/image/diyetisyen.jpg')} style={styles.doctor_image} />
+            <Image source={{uri:doctor.profilePhoto}} style={styles.doctor_image} />
             <Text style={styles.name_text}>{doctor.name} {doctor.surname}</Text>
           </View>
           <View style={styles.branş_container}>
             <Text style={styles.branş_text}>{doctor.specialization}</Text>
           </View>
           <View style={styles.rank_container}>
-            <Text style={styles.rank_text}>{doctor.rank}</Text>
+            <Text style={styles.rank_text}>{doctor.location.city}</Text>
           </View>
           <View style={styles.Konum_container}>
             <Text style={styles.Konum_text}>
               <Icon name="map-marker" size={30} color="red" />
-              Hastane Konum Bilgileri
+              {doctor.location.hospitalName}
             </Text>
           </View>
           <Card.Divider />

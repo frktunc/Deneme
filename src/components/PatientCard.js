@@ -2,14 +2,33 @@ import { Text, View,StyleSheet,Image ,TouchableOpacity} from 'react-native'
 import React, { Component } from 'react'
 import { Card } from 'react-native-elements';
 import Icon from "react-native-vector-icons/FontAwesome";
+import axios from 'axios';
+
+
+axios
+.get(`http://10.0.2.2:3000/api/doctor/profile`)
+  .then((response) => {
+    const fetchedData = response.data;
+    console.log(response)
+    console.log('GET isteği başarılı:');
+    
+    
+  
+  
+  
+  })
+  .catch((error) => {
+    console.error('GET isteği hatası:', error);
+   
+  });
 
 function PatientCard(){
     return(
-<View style={{}}>
+<View >
 <Card containerStyle={styles.card_container}>
 
 <View>
-  <Image source={require('../../assets/image/kardiyoloji.jpg')}
+  <Image source={require('../../assets/image/kar.jpg')}
   style={styles.image_container}
   />
 </View>

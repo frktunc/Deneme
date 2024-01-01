@@ -8,6 +8,7 @@ import { launchImageLibrary } from "react-native-image-picker";
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import axios from "axios";
 import { useSelector } from "react-redux";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -23,6 +24,10 @@ const[workingHours,setWorkingHoursStart] = useState('');
 const[workingHoursEnd,setWorkingHoursEnd] = useState('');
 const[about,setAbout] = useState('');
 const [selectedImage, setSelectedImage] = useState('');
+
+// const [selectedImage, setSelectedImage] = useState('');
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState('');
+  const [userProfileImage, setUserProfileImage] = useState(null);
 
 const token = useSelector((state)=> state.auth.token);
 
@@ -69,16 +74,111 @@ const openTwitter = () => {
       }else if (response.error) {
         console.log('Image picker error', response.error)
       }else{
-        let imageUri = response.uri || response.assets?.[0]?.uri;
-        setSelectedImage(imageUri);
-
+        let profilephoto = response.uri || response.assets?.[0]?.uri;
+        setSelectedImage(profilephoto);
+        uploadImage(profilephoto);
         
       }
     })
   }
 
+//resim post
+  const uploadImage = (profilephoto) => {
+    const formData = new FormData();
+    formData.append('profilephoto', {
+      uri: profilephoto,
+      type: 'image/jpeg',
+      name: 'user_profile_image.jpg',
+    });
+    axios.post('http://10.0.2.2:3000/api/doctor/profile?pf=1', formData, {
+      headers: {
+        'Authorization': token.data,
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+      .then((response) => {
+        console.log('Resim yükleme başarılı:', response.data);
+        setProfilePhotoUrl(response.data.data);
+        saveSelectedImage(profilephoto);
+        
+      })
+      .catch((error) => {
+        console.error('Resim yükleme hatası:', error);
+      });
 
- 
+      
+
+  };
+//Resim get
+//  function handleSearch (){
+//     const query = {
+//       filter: selectedCategory,
+//       city: selectedCity,
+//       hospital: selectedHospital,
+//       profilephoto : doctorImage
+//   }
+//   if(loading) return; 
+//   // http://10.0.2.2:3000/api/appointment/${page + 1}?&sort=asc
+  
+//   axios
+//     .get(`http://10.0.2.2:3000/api/appointment/1`, { params: query })
+//     .then((response) => {
+//       const fetchedData = response.data.data;
+//       // console.log('GET isteği başarılı:', fetchedData[0]);
+//       console.log(fetchedData[0].profilePhoto)
+//       if(fetchedData[0].profilePhoto){
+//         setDoctorImage({ uri: fetchedData[0].profilePhoto });
+//         console.log(setDoctorImage)
+//       }else{
+//         setDoctorImage(require('../../../assets/image/default-avatar.png'));
+//       }
+//       // setData(fetchedData); // Yeni veriyle değiştir
+//       setData([...data, ...fetchedData]);
+//       setPage(page + 1);
+//       setLoading(false);
+//       console.log(data)
+//       console.log(page)
+//       console.log(selectedHospital)
+      
+      
+      
+//     })
+//     .catch((error) => {
+//       console.error('GET isteği hatası:', error);
+//       setLoading(false);
+//     });
+// }
+
+
+
+
+
+
+  //asycn resmi kaydet
+  const saveSelectedImage = async (profilephoto) => {
+    try {
+      await AsyncStorage.setItem('userProfileImage', profilephoto);
+      console.log('Resim kaydedildi:', profilephoto);
+      
+    } catch (error) {
+      console.error('Resim kaydedilemedi:', error);
+    }
+  };
+  //resmi getir
+  useEffect(() => {
+    const fetchUserProfileImage = async () => {
+      try {
+        const profilephoto = await AsyncStorage.getItem('userProfileImage');
+        if (profilephoto) {
+          setUserProfileImage(profilephoto);
+        }
+      } catch (error) {
+        console.error('Resim getirilemedi:', error);
+      }
+    };
+
+    fetchUserProfileImage();
+  }, []);
     // kullanıcı bilgileri get
 
       const fetchData = async () => {
@@ -127,7 +227,9 @@ const openTwitter = () => {
   
     
     return(
-     
+     <ScrollView>
+
+    
 <View style={styles.container}>
 <ImageBackground style={styles.image_background} source={require("../../../assets/image/background.png")}>
 <Card containerStyle={{ borderRadius: 20 }} >
@@ -195,7 +297,7 @@ const openTwitter = () => {
 
 </ImageBackground>
 </View>
-
+</ScrollView>
     )
 }
 export default DoktorMain

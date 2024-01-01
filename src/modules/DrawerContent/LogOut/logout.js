@@ -1,35 +1,42 @@
-// import React, { useState } from 'react';
-// import { View, Text, Modal, Button, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, Button, Alert } from 'react-native';
+import { BackHandler } from 'react-native';
+import Icon from "react-native-vector-icons/FontAwesome";
 
+const ExitButton = () => {
+  const handleExit = () => {
+    Alert.alert(
+      'Çıkış Yap',
+      'Çıkış Yapmak İstediğinize Emin misiniz?',
+      [
+        {
+          text: 'Vazgeç',
+          style: 'cancel',
+        },
+        {
+          text: 'Çıkış Yap',
+          onPress: () => {
+            BackHandler.exitApp();
+            // Burada çıkış işlemi gerçekleştirilebilir
+            // Örneğin:
+            // Çıkış işlemi için ilgili kodu buraya ekleyin (örneğin uygulamayı kapatma)
+            // Örnek olarak:
+            // Native yöntem ile uygulamadan çıkış yapmak (bu kısmı cihaza göre uygulama yapılandırmasına göre değiştirmeniz gerekebilir)
+            // örneğin:
+            // Platform.OS === 'ios' ? RNExitApp.exitApp() : BackHandler.exitApp();
+            // yukarıdaki kod Android ve iOS platformlarında uygulamadan çıkış yapmak için kullanılabilir
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
-// const [modalVisible, setModalVisible] = useState(false);
-//     function LogoutComponent() {
-  
+  return (
+    <View>
+      <Icon name="sign-out" size={30} color="red" onPress={handleExit} />
+    </View>
+  );
+};
 
-//   const handleLogout = () => {
-//     // Oturumu kapatma işlemleri burada gerçekleştirilebilir.
-//     console.log('Oturum kapatıldı.');
-//     setModalVisible(false);
-//   };
-
-//   return (
-//     <View>
-//       <Button title="Oturumu Kapat" onPress={() => setModalVisible(true)} />
-//       <Modal
-//         visible={modalVisible}
-//         animationType="slide"
-//         transparent={true}
-//       >
-//         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//           <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, width: 300 }}>
-//             <Text>Oturumu kapatmak istediğinize emin misiniz?</Text>
-//             <Button title="Evet" onPress={handleLogout} />
-//             <Button title="Hayır" onPress={() => setModalVisible(false)} />
-//           </View>
-//         </View>
-//       </Modal>
-//     </View>
-//   );
-// }
-
-// export default LogoutComponent;
+export default ExitButton;

@@ -24,6 +24,7 @@ import Doktordetails from './src/modules/DoktorDetails/doktordetails';
 import Doktor_Login from './src/modules/login/Doktor_Login';
 import DoktorMain from './src/modules/Main/DoktorMain'
 import DoktorModal from './src/components/DoktorModal'
+import UpdateDoctorInfo from './src/modules/DrawerContent/UpdateInfo/updateDoctorInfo';
 
 
 
@@ -131,6 +132,7 @@ export default function App() {
         <Stack.Screen name='Modal' component={ModalEkran} />
         <Stack.Screen name='DoktorModal' component={DoktorModal} />
         <Stack.Screen name='Detail' component={Doktordetails} />
+        <Stack.Screen name='Update Doctor' component={UpdateDoctorInfo} />
       </Stack.Navigator>
       <FlashMessage position="top" /> 
     </NavigationContainer>

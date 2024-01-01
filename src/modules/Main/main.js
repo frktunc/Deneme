@@ -11,7 +11,9 @@ import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import axios from "axios";
 import { useSelector, useDispatch } from 'react-redux';
 import { setToken } from "../../Redux/authSlice";
+import ExitButton from "../DrawerContent/LogOut/logout";
 import formatISODateToTurkishWithTime from "../../FormatFunc/formatISODateToTurkishWithTime";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Main({navigation}){
  
@@ -29,6 +31,8 @@ function Main({navigation}){
   // const[doktorad, setDoktorad] = useState('');
 
   const [selectedImage, setSelectedImage] = useState('');
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState('');
+  const [userProfileImage, setUserProfileImage] = useState(null);
 
   const token = useSelector((state)=>state.auth.token);
   const userRole = useSelector((state) => state.auth.userRole)
@@ -44,29 +48,8 @@ function Main({navigation}){
     }else if (permissionsStatus === RESULTS.BLOCKED) {
       console.log('Kullanıcı İzni Engellendi');
     }
-  };
- 
-  const launchGallery = ()=> {
-    const options = {
-      mediaType: 'photo',
-      includeBase64: false,
-      maxHeight: Math.floor(Dimensions.get('window').height),
-      maxWidth: Math.floor(Dimensions.get('window').width),
-    }
-    launchImageLibrary(options, (response) => {
-      if(response.didCancel) {
-        console.log('user cacelled image picker');
-      }else if (response.error) {
-        console.log('Image picker error', response.error)
-      }else{
-        let imageUri = response.uri || response.assets?.[0]?.uri;
-        setSelectedImage(imageUri);
 
-        
-      }
-    })
-  }
-  //  Resim post
+
     // const formData = new FormData();
     // formData.append('profilephoto', {
     //   uri: selectedImage,
@@ -88,18 +71,100 @@ function Main({navigation}){
     // })
 
     
-    // axios.get('http://10.0.2.2:3000/api/patient/profile-photo',{
-    //   headers:{
-    //     'Authorization': token.data,
-        
-    //   },
-    // }).then(response => {
-    //   console.log('sa')
-    //   console.log(response.data)
-    //   console.log('first')
-    // } )
+  
+    
+  };
  
+  const launchGallery = ()=> {
+    const options = {
+      mediaType: 'photo',
+      includeBase64: false,
+      maxHeight: Math.floor(Dimensions.get('window').height),
+      maxWidth: Math.floor(Dimensions.get('window').width),
+    }
+    launchImageLibrary(options, (response) => {
+      if(response.didCancel) {
+        console.log('user cacelled image picker');
+      }else if (response.error) {
+        console.log('Image picker error', response.error)
+      }else{
+        let imageUri = response.uri || response.assets?.[0]?.uri;
+        setSelectedImage(imageUri);
+        uploadImage(imageUri);
+        
+      }
+    })
+  }
+  //  Resim post
+  const uploadImage = (imageUri) => {
+    const formData = new FormData();
+    formData.append('profilephoto', {
+      uri: imageUri,
+      type: 'image/jpeg',
+      name: 'user_profile_image.jpg',
+    });
+    axios.post('http://10.0.2.2:3000/api/patient/update-profile-photo', formData, {
+      headers: {
+        'Authorization': token.data,
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+      .then((response) => {
+        console.log('Resim yükleme başarılı:', response.data);
+        setProfilePhotoUrl(response.data.data);
+        saveSelectedImage(imageUri);
+        
+      })
+      .catch((error) => {
+        console.error('Resim yükleme hatası:', error);
+      });
 
+      
+
+  };
+
+  const saveSelectedImage = async (imageUri) => {
+    try {
+      await AsyncStorage.setItem('userProfileImage', imageUri);
+      console.log('Resim kaydedildi:', imageUri);
+      
+    } catch (error) {
+      console.error('Resim kaydedilemedi:', error);
+    }
+  };
+
+   useEffect(() => {
+    const fetchUserProfileImage = async () => {
+      try {
+        const imageUri = await AsyncStorage.getItem('userProfileImage');
+        if (imageUri) {
+          setUserProfileImage(imageUri);
+        }
+      } catch (error) {
+        console.error('Resim getirilemedi:', error);
+      }
+    };
+
+    fetchUserProfileImage();
+  }, []);
+ 
+  // useEffect(() => {
+  //   if (profilePhotoUrl) {
+  //     axios.get(profilePhotoUrl, {
+  //       headers: {
+  //         'Authorization': token.data,
+  //       },
+  //     })
+  //     .then(response => {
+  //       // response.data içerisinde resim verisi olacak
+  //       // Bu veriyi kullanarak istediğiniz işlemi yapabilirsiniz
+  //       console.log('Profil resmi alındı:', response.data);
+  //     })
+  //     .catch(error => {
+  //       console.error('Profil resmi alınamadı:', error);
+  //     });
+  //   }
+  // }, [profilePhotoUrl]);
 
   
     // kullanıcı bilgileri get
@@ -114,7 +179,14 @@ function Main({navigation}){
               'Authorization': token.data,
             }
           }))
-         
+          
+          // const response2 = (await axios.get('http://10.0.2.2:3000/api/patient/profile-photo',{
+          //   headers: {
+          //     'Authorization': token.data,
+          //   }
+          // }))
+          // console.log("121221",response2.data)
+          // setProfilePhotoUrl(response2.data.data);
 
           if(response.data.data !== undefined){
            
@@ -196,16 +268,16 @@ function Main({navigation}){
   <Icon name="pencil" size={30} color="blue" />
 </TouchableOpacity>
 <TouchableOpacity>
-<Icon name="sign-out" size={30} color="red" />
+<ExitButton/>
 
 </TouchableOpacity>
 
 </View>
     <View style={{justifyContent:'center',alignItems:'center',marginBottom:15}}>
     < TouchableOpacity onPress={openImagePicker} style={styles.image_view}>
-      {selectedImage ? (
+      {userProfileImage ? (
         <Image style={styles.image_view}
-            source={{uri:"https://healtapp-profilephotos.s3.amazonaws.com/6541668b27224927632d9564.jpeg"}} />
+            source={{uri:userProfileImage}} />
       ):  (
         <Image style={styles.image_view}source={require('../../../assets/image/default-avatar.png')} />
       )}
